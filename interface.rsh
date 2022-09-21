@@ -2,13 +2,13 @@
 "use strict";
 // -----------------------------------------------
 // Name: KINN Active Reverse Auction (A1)
-// Version: 0.1.1 - add start and fun  
+// Version: 0.1.2 - fix state
 // Requires Reach v0.1.11-rc7 (27cb9643) or later
 // ----------------------------------------------
 
 // TYPES
 
-const State = Struct([
+const State = (distLength) => Struct([
   ["manager", Address],
   ["token", Token],
   ["tokenAmount", UInt],
@@ -18,8 +18,8 @@ const State = Struct([
   ["closed", Bool],
   ["endSecs", UInt],
   ["priceChangePerSec", UInt],
-  ["addrs", Array(Address, DIST_LENGTH)],
-  ["distr", Array(UInt, DIST_LENGTH)],
+  ["addrs", Array(Address, distLength)],
+  ["distr", Array(UInt, distLength)],
   ["royaltyCap", UInt],
   ["who", Address],
   ["timestamp", UInt],
