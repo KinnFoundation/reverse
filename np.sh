@@ -65,11 +65,27 @@ EOF
 }
 EOF
 	}
+	plan-carbon () {
+		cat <<EOF
+{
+  "id": "${plan_id}",
+  "params": {
+    "tok0": ${param_tok0},
+    "tok1": ${param_tok1},
+    "tok2": ${param_tok2},
+    "tok3": ${param_tok3},
+    "tok4": ${param_tok4},
+    "tok5": ${param_tok5}
+  }
+}
+EOF
+	}
 	plan () {
 		case "${1}" in
+			(carbon | 3) plan-carbon ;;
 			(helium | 2) plan-helium ;;
 			(hydrogen | 1) plan-hydrogen ;;
-			(verify | 0 | *) plan-verify ;;
+			(verify | atom | 0 | *) plan-verify ;;
 		esac
 	}
 	v2-register () {
@@ -80,6 +96,9 @@ EOF
 		local param_tok0="${2:-${PARAM_TOK0}}" 
 		local param_tok1="${3:-${PARAM_TOK1}}" 
 		curl -X POST "${API_ENDPOINT_TESTNET}/api/v2/launch" -H 'Content-Type: application/json' -d @<( plan "${TEMPLATE_NAME}" )
+	}
+	v2-auth() {
+		curl -X POST "${API_ENDPOINT_TESTNET}/api/v2/auth" -H 'Content-Type: application/json' -H "Authorization: Bearer ${ZB_AUTH_TOKEN}"
 	}
 	v2-apps () {
 		local plan_id="${1}" 
@@ -95,6 +114,12 @@ EOF
 	}
 	v2-verify () {
 		local plan_id="${1}" 
+		local param_tok0="${2:-${PARAM_TOK0}}" 
+		local param_tok1="${3:-${PARAM_TOK1}}" 
+		local param_tok2="${4:-${PARAM_TOK2}}" 
+		local param_tok3="${5:-${PARAM_TOK3}}" 
+		local param_tok4="${6:-${PARAM_TOK4}}" 
+		local param_tok5="${7:-${PARAM_TOK5}}" 
 		test "${plan_id}" || {
 			v2-verify-help
 			false
