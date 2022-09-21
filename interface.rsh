@@ -2,13 +2,13 @@
 "use strict";
 // -----------------------------------------------
 // Name: KINN Active Reverse Auction (A1)
-// Version: 0.1.2 - fix state
+// Version: 0.1.3 - fix scope export
 // Requires Reach v0.1.11-rc7 (27cb9643) or later
 // ----------------------------------------------
 
 // TYPES
 
-const State = (distLength) => Struct([
+export const State = (distLength) => Struct([
   ["manager", Address],
   ["token", Token],
   ["tokenAmount", UInt],
@@ -35,7 +35,7 @@ export const Params = (distLength) => Object({
   royaltyCap: UInt, // 10
 });
 
-const MContract = Maybe(Contract);
+export const MContract = Maybe(Contract);
 
 // FUN
 
