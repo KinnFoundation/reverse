@@ -24,14 +24,13 @@ export const constructorInteract = {
     })
   ),
 };
-export const construct = (Constructor, Verifier) => {
+export const construct = (Constructor) => {
   Constructor.only(() => {
     const { addr, amt, ttl } = declassify(interact.getParams());
     assume(true);
   });
   Constructor.publish(addr, amt, ttl);
   require(true);
-  Verifier.set(addr);
   commit();
   return {
     addr,
@@ -75,8 +74,7 @@ export const binaryFork = (A, B, addr, amt, ttl) => {
 };
 export const DefaultParticipants = () => [
   Participant("Constructor", constructorInteract),
-  Participant("Verifier", commonInteract),
-  Participant("Contractee", commonInteract),
+  Participant("Verifier", constructorInteract),
 ];
 export const verify = (Constructor, Verifier, Contractee) => {
   const { addr, amt, ttl } = construct(Constructor, Verifier);
@@ -86,15 +84,17 @@ export const verify = (Constructor, Verifier, Contractee) => {
 export const useConstructor = (
   particpantFunc = () => {},
   viewFunc = () => {},
-  apiFunc = () => {}
+  apiFunc = () => {},
+  eventFunc = () => {}
 ) => {
-  const [Constructor, Verifier, Contractee] = DefaultParticipants();
+  const [Constructor, _] = DefaultParticipants();
   const p = particpantFunc();
   const v = viewFunc();
   const a = apiFunc();
+  const e = eventFunc();
   init();
-  const addr = verify(Constructor, Verifier, Contractee);
-  return [[addr, Constructor, Contractee], p, v, a];
+  const { addr, amt, ttl } = construct(Constructor);
+  return [{ amt, ttl }, [addr, Constructor], p, v, a, e];
 };
 // deposit tokens
 export const depositTok7 = (A) => {
